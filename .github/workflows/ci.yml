@@ -18,6 +18,7 @@ jobs:
         run: python3 Scripts/validate-results.py Results/local/ci.json
       - name: Check fresh-process memory probe
         run: |
+          swift build -c release --product dotmemory
           bin=$(swift build -c release --show-bin-path)
           "$bin/dotbench" --write-fixtures Results/local/fixtures
           python3 Scripts/measure-memory.py Results/local/fixtures --probe "$bin/dotmemory" --include-simulation --repeats 1 --output Results/local/ci-memory.json
