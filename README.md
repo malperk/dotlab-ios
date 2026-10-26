@@ -162,6 +162,8 @@ Use the same simulator, count, viewport, and resting state for each screenshot. 
 - **Pixel error** is geometric error at a declared 1179×1179-pixel viewport. It does not establish perceptual equivalence at every zoom level.
 - **Energy savings** require separate on-device power traces. Fewer frames alone do not quantify battery-life improvement.
 
+`Scripts/profile-idle.sh IPHONE_UDID continuous Results/local/baseline.trace` launches a 60-second Power Profiler recording; repeat with `activeAoS` and alternate modes across several runs. The helper restores the default app mode after recording or failure. Instruments attachment/recording failed on the recorded test environment, so the published experiment contains no power comparison. See [the recorded limitations](Results/README.md).
+
 See [the measurement protocol](Docs/PROTOCOL.md), [the binary format](Docs/FORMAT.md), and [recorded results](Results/README.md).
 
 ## Project layout
