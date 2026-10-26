@@ -1,6 +1,6 @@
 # DotLab
 
-An iOS particle experiment by **Alper Karatas**. Touch an orbital illustration, watch it spring back, and compare what happens when you change its file format, animation scheduling, and simulation memory layout.
+An iOS particle experiment. Touch an orbital illustration, watch it spring back, and compare what happens when you change its file format, animation scheduling, and simulation memory layout.
 
 The question: **How much work can we remove while preserving the same image and interaction?**
 
@@ -15,6 +15,8 @@ open DotLab.xcodeproj
 ```
 
 Choose the `DotLab` scheme and a destination. For a physical device, select your own development team in Signing & Capabilities. The project deliberately does not contain a development-team identifier.
+
+Use the target's bundle identifier wherever `YOUR_APP_BUNDLE_ID` appears in the commands below.
 
 If Xcode reports a missing Metal compiler:
 
@@ -102,7 +104,7 @@ The automated launch arguments are also usable from the Xcode scheme:
 Retrieve a simulator export:
 
 ```sh
-container=$(xcrun simctl get_app_container YOUR_SIMULATOR_UDID com.alperkaratas.dotlab data)
+container=$(xcrun simctl get_app_container YOUR_SIMULATOR_UDID YOUR_APP_BUNDLE_ID data)
 cp "$container/Documents/device-smoke.json" Results/local/simulator-smoke.json
 python3 Scripts/validate-results.py Results/local/simulator-smoke.json
 ```
@@ -120,14 +122,14 @@ xcrun devicectl device install app --device YOUR_IPHONE_UDID \
   /tmp/dotlab-device/Build/Products/Release-iphoneos/DotLab.app
 
 xcrun devicectl device process launch --device YOUR_IPHONE_UDID \
-  --terminate-existing com.alperkaratas.dotlab --benchmark --standard
+  --terminate-existing YOUR_APP_BUNDLE_ID --benchmark --standard
 ```
 
 The standard protocol takes about 53 minutes: 60 shuffled trials, each with 1 second warmup, 10 seconds initial idle, 10 seconds scripted interaction, up to 10 seconds settling, and 30 seconds final idle. Keep the app foregrounded. Backgrounding cancels the suite and saves partial results; the app disables automatic screen lock during a suite and restores it afterward.
 
 ```sh
 xcrun devicectl device copy from --device YOUR_IPHONE_UDID \
-  --domain-type appDataContainer --domain-identifier com.alperkaratas.dotlab \
+  --domain-type appDataContainer --domain-identifier YOUR_APP_BUNDLE_ID \
   --source Documents/device-standard.json --destination Results/local/iphone.json
 
 python3 Scripts/validate-results.py Results/local/iphone.json --require-physical --standard
@@ -189,4 +191,4 @@ Apple documentation: [MTKView drawing modes](https://developer.apple.com/documen
 
 ## License
 
-MIT. Copyright © 2026 Alper Karatas.
+MIT. See [LICENSE](LICENSE).
