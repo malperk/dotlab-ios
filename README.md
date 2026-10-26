@@ -6,6 +6,8 @@ The question: **How much work can we remove while preserving the same image and 
 
 <img src="Docs/playground.png" alt="DotLab's interactive orbital particle field on iPhone" width="340">
 
+**Results:** [Measured results and findings](Results/README.md), including the iPhone benchmark, charts, raw data, and measurement limitations.
+
 ## Run the app
 
 Requirements: Xcode 16 or newer, iOS 17 or newer, and a Metal-capable device or simulator. Use a physical iPhone and a Release build for performance conclusions. The checked-in Xcode project has no third-party dependencies.
