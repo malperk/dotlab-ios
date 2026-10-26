@@ -7,16 +7,44 @@ struct Report: Codable {
     var simulation: [SimulationMeasurement]
 }
 
+struct Fixture: Codable {
+    var dataset: DatasetKind
+    var count: Int
+    var format: DotFormat
+    var rawBytes: Int
+    var file: String
+}
+
 do {
     let arguments = Array(CommandLine.arguments.dropFirst())
     let quick = arguments.contains("--quick")
     let codecOnly = arguments.contains("--codec-only")
+    if let index = arguments.firstIndex(of: "--write-fixtures"), arguments.indices.contains(index + 1) {
+        let folder = URL(fileURLWithPath: arguments[index + 1])
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        var fixtures: [Fixture] = []
+        for count in [10_000, 50_000, 100_000] {
+            for kind in DatasetKind.allCases {
+                let dots = Dataset.make(count: count, kind: kind)
+                for format in DotFormat.allCases {
+                    let raw = try DotCodec.encode(dots, format: format)
+                    let file = "\(kind.rawValue)-\(count)-\(format.rawValue).lzfse"
+                    try DotCodec.compress(raw).write(to: folder.appendingPathComponent(file))
+                    fixtures.append(Fixture(dataset: kind, count: count, format: format,
+                                            rawBytes: raw.count, file: file))
+                }
+            }
+        }
+        try JSONEncoder().encode(fixtures).write(to: folder.appendingPathComponent("manifest.json"))
+        print("Wrote \(fixtures.count) compressed fixtures to \(folder.path)")
+        exit(0)
+    }
     let output: String
     if let index = arguments.firstIndex(of: "--output"), arguments.indices.contains(index + 1) {
         output = arguments[index + 1]
     } else { output = "Results/local/macos.json" }
     if arguments.contains("--help") {
-        print("Usage: swift run -c release dotbench [--quick] [--codec-only] [--output path.json]")
+        print("Usage: dotbench [--quick] [--codec-only] [--output path.json] | --write-fixtures directory")
         exit(0)
     }
     var report = Report(environment: EnvironmentInfo(platform: "macOS / CPU only",

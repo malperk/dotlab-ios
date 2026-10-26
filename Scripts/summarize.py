@@ -15,6 +15,32 @@ FORMATS = {
 
 
 def summarize(report):
+    if "samples" in report and "environment" not in report:
+        groups = collections.defaultdict(list)
+        for row in report["samples"]:
+            groups[(row["dataset"], row["count"], row["format"])].append(row)
+        lines = ["# DotLab decoding memory", "", f"Recorded: {report['timestamp']}", "",
+                 report["platform"], "", report["notes"], "",
+                 "Medians across independent processes. MiB = 1,048,576 bytes. Peaks include process startup.", "",
+                 "| Dataset | Dots | Format | Repeats | Baseline RSS (MiB) | Peak process RSS (MiB) | Final RSS (MiB) |",
+                 "|---|---:|---|---:|---:|---:|---:|"]
+        for (dataset, count, format_id), rows in sorted(groups.items()):
+            med = lambda key: statistics.median(row[key] for row in rows) / 1_048_576
+            lines.append(f"| {dataset} | {count:,} | {FORMATS[format_id]} | {len(rows)} | "
+                         f"{med('baselineResidentBytes'):.2f} | {med('peakProcessResidentBytes'):.2f} | "
+                         f"{med('finalResidentBytes'):.2f} |")
+        if report.get("simulationSamples"):
+            groups = collections.defaultdict(list)
+            for row in report["simulationSamples"]:
+                groups[(row["count"], row["mode"])].append(row)
+            lines += ["", "## Simulation process memory", "", report["simulationNotes"], "",
+                      "| Dots | Mode | Repeats | Peak process RSS (MiB) | Final RSS (MiB) |",
+                      "|---:|---|---:|---:|---:|"]
+            for (count, mode), rows in sorted(groups.items()):
+                peak = statistics.median(row["peakProcessResidentBytes"] for row in rows) / 1_048_576
+                final = statistics.median(row["finalResidentBytes"] for row in rows) / 1_048_576
+                lines.append(f"| {count:,} | {mode} | {len(rows)} | {peak:.2f} | {final:.2f} |")
+        return "\n".join(lines) + "\n"
     env = report["environment"]
     lines = ["# DotLab benchmark results", "", f"Recorded: {env['timestamp']}", "",
              f"Platform: {env['platform']} · {env['os']}", "", env["notes"], ""]

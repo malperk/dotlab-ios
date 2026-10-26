@@ -88,6 +88,8 @@ final class LabModel: ObservableObject {
         let args = ProcessInfo.processInfo.arguments
         if let index = args.firstIndex(of: "--count"), args.indices.contains(index + 1),
            let value = Int(args[index + 1]), [10_000, 50_000, 100_000].contains(value) { count = value }
+        if let index = args.firstIndex(of: "--mode"), args.indices.contains(index + 1),
+           let value = SimulationMode(rawValue: args[index + 1]) { mode = value }
         do {
             var dots = Dataset.make(count: count)
             if let index = args.firstIndex(of: "--format"), args.indices.contains(index + 1),

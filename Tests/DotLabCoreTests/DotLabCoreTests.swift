@@ -51,6 +51,22 @@ import Testing
     }
 }
 
+@Test func rejectsInvalidFloatPayloadAndHeaderFields() throws {
+    let valid = try DotCodec.encode([Dot(x: 0.5, y: 0.5, radius: 0.001)], format: .floatInterleaved)
+    var nan = valid
+    nan.replaceSubrange(16..<20, with: [0, 0, 192, 127])
+    #expect(throws: CodecError.invalidValue) { try DotCodec.decode(nan) }
+    var negative = valid
+    negative.replaceSubrange(16..<20, with: [205, 204, 204, 189])
+    #expect(throws: CodecError.invalidValue) { try DotCodec.decode(negative) }
+    var reserved = valid
+    reserved[6] = 1
+    #expect(throws: CodecError.invalidHeader) { try DotCodec.decode(reserved) }
+    var extra = valid
+    extra.append(0)
+    #expect(throws: CodecError.invalidLength) { try DotCodec.decode(extra) }
+}
+
 @Test func activeModesMatchFullScanAndSettle() {
     let dots = Dataset.make(count: 2000)
     let simulations = SimulationMode.allCases.map { Simulation(dots: dots, mode: $0) }

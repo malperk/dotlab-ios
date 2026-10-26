@@ -67,6 +67,19 @@ python3 Scripts/summarize.py Results/local/macos.json --output Results/local/mac
 
 The host benchmark produces 24 encoding rows and 60 CPU simulation trials. Add `--quick` for fewer repetitions and a shorter interaction, or `--codec-only` to skip simulation. These CPU timings do not measure rendered FPS or iPhone energy consumption.
 
+Measure decoding memory in isolated macOS processes:
+
+```sh
+swift build -c release
+bin=$(swift build -c release --show-bin-path)
+"$bin/dotbench" --write-fixtures Results/local/fixtures
+python3 Scripts/measure-memory.py Results/local/fixtures --probe "$bin/dotmemory" \
+  --include-simulation --output Results/local/memory.json
+python3 Scripts/summarize.py Results/local/memory.json --output Results/local/memory.md
+```
+
+Each memory sample launches a new decoder process. The source generator/encoder runs separately, so it cannot contaminate the decoder's process high-water mark. Peak process RSS still includes the Swift runtime, Foundation, and file reading; it is not a measurement of only the decoded array.
+
 ### Simulator
 
 ```sh
@@ -82,6 +95,7 @@ The automated launch arguments are also usable from the Xcode scheme:
 --replay                     One 10-second scripted interaction
 --count 100000               Initial playground dot count
 --format 2                   Initial playground encoding, IDs 0–3
+--mode continuous            Initial mode: continuous, sleep, activeAoS, activeSoA
 ```
 
 Retrieve a simulator export:
@@ -121,6 +135,20 @@ python3 Scripts/summarize.py Results/local/iphone.json --output Results/local/ip
 
 Exports are checkpointed after every trial. They include raw samples, summaries, OS/device/GPU metadata, build configuration, thermal states, callback-based missed-refresh estimates, post-trial RSS, and codec error bounds. Only files from this test app's container are needed.
 
+### Figures and image comparison
+
+The core and JSON tools use only the Swift and Python standard libraries. Optional figures and image comparisons use Python packages:
+
+```sh
+python3 -m venv .venv
+.venv/bin/pip install -r Scripts/requirements-analysis.txt
+.venv/bin/python Scripts/plot-results.py Results/macos-release.json --output Results/host-overview
+.venv/bin/python Scripts/compare-images.py reference.png candidate.png \
+  --crop LEFT TOP RIGHT BOTTOM --output Results/local/images.json
+```
+
+Use the same simulator, count, viewport, and resting state for each screenshot. The crop must cover only the particle field. The checked-in comparison uses 100K dots in a 966×966-pixel field; geometric error bounds remain the primary declared tolerance.
+
 ## Interpret the results
 
 - **Open time** includes decompression, validation, and reconstruction into the shared Float32 layout. Disk/network I/O and GPU-buffer creation are excluded.
@@ -140,6 +168,7 @@ See [the measurement protocol](Docs/PROTOCOL.md), [the binary format](Docs/FORMA
 ```text
 Sources/DotLabCore/     Deterministic datasets, codecs, physics, measurements
 Sources/DotBench/       macOS command-line benchmark
+Sources/DotMemory/      Fresh-process decoding memory probe
 Tests/                 Codec safety, error bounds, equivalent trajectories
 iOS/DotLab/            SwiftUI interface, Metal renderer, device suite
 Scripts/               Launch, validate, summarize, and visual comparison tools

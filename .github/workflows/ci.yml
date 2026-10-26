@@ -14,11 +14,20 @@ jobs:
         run: swift test
       - name: Smoke benchmark
         run: swift run -c release dotbench --quick --output Results/local/ci.json
+      - name: Validate benchmark invariants
+        run: python3 Scripts/validate-results.py Results/local/ci.json
+      - name: Check fresh-process memory probe
+        run: |
+          bin=$(swift build -c release --show-bin-path)
+          "$bin/dotbench" --write-fixtures Results/local/fixtures
+          python3 Scripts/measure-memory.py Results/local/fixtures --probe "$bin/dotmemory" --include-simulation --repeats 1 --output Results/local/ci-memory.json
       - name: Upload raw benchmark
         uses: actions/upload-artifact@v4
         with:
           name: macos-smoke-results
-          path: Results/local/ci.json
+          path: |
+            Results/local/ci.json
+            Results/local/ci-memory.json
   ios:
     runs-on: macos-15
     steps:

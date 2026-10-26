@@ -94,8 +94,8 @@ struct LabView: View {
             }
             HStack(spacing: 0) {
                 metric("ACTIVE", value: model.activeCount.formatted())
-                metric("SUBMIT", value: String(format: "%.2f ms", model.submissionMS))
-                metric("GPU", value: String(format: "%.2f ms", model.gpuMS))
+                metric("LAST SUBMIT", value: String(format: "%.2f ms", model.submissionMS))
+                metric("LAST GPU", value: String(format: "%.2f ms", model.gpuMS))
             }
             Rectangle().fill(.white.opacity(0.09)).frame(height: 1)
             Picker("Dot count", selection: $model.count) {
