@@ -1,0 +1,70 @@
+{
+  "date": "2026-10-26",
+  "timezone": "Europe/London",
+  "build": {
+    "configuration": "Release",
+    "xcode": "27.0 (27A266a)",
+    "swift": "6.4",
+    "iosSDK": "27.0"
+  },
+  "physicalDevice": {
+    "model": "iPhone 16 / iPhone17,3",
+    "os": "iOS 26.6.1 (23G83)",
+    "gpu": "Apple A18 GPU",
+    "appSourceRevision": "8c5d23e99ff51f78f34929bdfdd380da5e486395",
+    "sourceTag": "device-baseline-2026-10-26",
+    "protocol": "standard / 5 repeats",
+    "trials": 60
+  },
+  "host": {
+    "cpu": "Apple M3 Max",
+    "os": "macOS 27.0.1",
+    "coreAlgorithmRevision": "8c5d23e99ff51f78f34929bdfdd380da5e486395",
+    "memoryProbeRevision": "952882c",
+    "timingTrials": 60,
+    "decoderMemorySamples": 120,
+    "simulationMemorySamples": 60
+  },
+  "profiling": {
+    "appSourceRevision": "2c0eb24",
+    "usableTraceObtained": false,
+    "attachFailure": "Cannot find process matching name or exact PID while devicectl reports the app running",
+    "directLaunchExitCode": 133,
+    "exportFailure": "Document Missing Template Error",
+    "powerOrBatteryClaim": false
+  },
+  "notes": [
+    "Raw app exports were copied without modifying their contents.",
+    "The published simulator smoke run and image comparisons used the same simulator and renderer.",
+    "The device suite ran without a profiler; checkpoints were transferred periodically.",
+    "Brightness, charging state, Low Power Mode, and unrelated system load were not independently controlled or recorded."
+  ],
+  "rawArtifacts": {
+    "macos-release.json": {
+      "sha256": "cfde20e8d95cc22b8aff9fb69dab481aa7a6f389918dbe53f892fe3666c508d6",
+      "bytes": 31876
+    },
+    "macos-memory.json": {
+      "sha256": "61a851eccff2970cf0d6737d11e02f806799477f34f0f4b0fbdd1a53dc29918a",
+      "bytes": 60359
+    },
+    "simulator-smoke.json": {
+      "sha256": "c972fb53b2dec05e39e1a20010847db54f1e175e463263ebf4beb1c2fd2f2280",
+      "bytes": 464754
+    },
+    "iphone16-standard.json": {
+      "sha256": "22c5c47b20306294df6f9bfa95c62fe66b6890822b5c05e770b3159872ab6ab6",
+      "bytes": 9983802
+    },
+    "visual-comparison.json": {
+      "sha256": "b3e420afa4e973d8cbc6c61312658740dd3a5e6fa88876363b1fecac8171ae62",
+      "bytes": 1055
+    }
+  },
+  "coreSourceSHA256": {
+    "Sources/DotLabCore/Dataset.swift": "d95685b61fc69a3a9ac0d03aefd94c8e5c48a0a45d256c4484485034b84d8392",
+    "Sources/DotLabCore/DotCodec.swift": "5869caa3f24cb43272610ea1387456375eec32aac4f4843d96b4843d969d00d0",
+    "Sources/DotLabCore/Measurements.swift": "fa41c4edc367ed80c7d5d807bdf4453de645966ca907605d57b4975137733105",
+    "Sources/DotLabCore/Simulation.swift": "9e4aae0f3a0c9b850d79b9efe0cf748e49835ead11c755a0a74ee909f4b27fd4"
+  }
+}

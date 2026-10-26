@@ -1,0 +1,38 @@
+{
+  "reference": "dotlab-format0.png",
+  "crop": [
+    120,
+    1062,
+    1086,
+    2028
+  ],
+  "size": [
+    966,
+    966
+  ],
+  "channelRange": "0\u2013255 encoded RGB",
+  "notes": "Static 100K field on the same simulator. Crops exclude changing UI. Pixel differences are reported, not a universal perceptual-equivalence score.",
+  "comparisons": [
+    {
+      "candidate": "dotlab-format1.png",
+      "meanAbsoluteChannelError": 0.1114593915701126,
+      "maxAbsoluteChannelError": 44,
+      "p99AbsoluteChannelError": 2.0,
+      "changedPixelFraction": 0.14183266249158769
+    },
+    {
+      "candidate": "dotlab-format2.png",
+      "meanAbsoluteChannelError": 0.1114593915701126,
+      "maxAbsoluteChannelError": 44,
+      "p99AbsoluteChannelError": 2.0,
+      "changedPixelFraction": 0.14183266249158769
+    },
+    {
+      "candidate": "dotlab-format3.png",
+      "meanAbsoluteChannelError": 0.1114593915701126,
+      "maxAbsoluteChannelError": 44,
+      "p99AbsoluteChannelError": 2.0,
+      "changedPixelFraction": 0.14183266249158769
+    }
+  ]
+}
