@@ -1,0 +1,31 @@
+name: Validate
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  core:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test codec and physics
+        run: swift test
+      - name: Smoke benchmark
+        run: swift run -c release dotbench --quick --output Results/local/ci.json
+      - name: Upload raw benchmark
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-smoke-results
+          path: Results/local/ci.json
+  ios:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build iOS simulator app
+        run: >-
+          xcodebuild -project DotLab.xcodeproj -scheme DotLab
+          -configuration Release -sdk iphonesimulator
+          -destination 'generic/platform=iOS Simulator'
+          CODE_SIGNING_ALLOWED=NO build
