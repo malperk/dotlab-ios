@@ -42,6 +42,10 @@ parser.add_argument("input", type=Path)
 parser.add_argument("--output", type=Path, required=True, help="Output path without suffix")
 args = parser.parse_args()
 report = json.loads(args.input.read_text())
+if not report.get("simulation") and not report.get("trials"):
+    parser.error("This overview requires CPU simulation or rendered-device trials.")
+if "trials" in report and not report.get("completed"):
+    parser.error("Refusing to plot an incomplete device comparison.")
 plt.rcParams.update({"font.size": 10, "axes.spines.top": False, "axes.spines.right": False,
                      "svg.fonttype": "none"})
 fig, axes = plt.subplots(1, 2, figsize=(12, 4.8))

@@ -96,6 +96,7 @@ The automated launch arguments are also usable from the Xcode scheme:
 --count 100000               Initial playground dot count
 --format 2                   Initial playground encoding, IDs 0–3
 --mode continuous            Initial mode: continuous, sleep, activeAoS, activeSoA
+--keep-awake                 Disable this app's auto-lock timer for manual profiling
 ```
 
 Retrieve a simulator export:
